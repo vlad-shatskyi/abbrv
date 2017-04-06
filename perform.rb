@@ -12,10 +12,15 @@ def open(openable)
   `gio open #{openable}`
 end
 
+def error(message)
+  escaped_message = message.gsub('"', '\\"')
+  `notify-send  --hint=int:transient:1 --hint=string:sound-name:bell "#{escaped_message}"`
+end
+
 while true
   command = $stdin.gets.chomp
 
-  puts "Processing '#{command}'..."
+  puts command
   case command
   when 'close current window'
     close_current_window
@@ -24,8 +29,8 @@ while true
   when /^open ([^ ]+)$/
     open($1)
   when /^([a-z]+) is not defined$/
-    puts "Shortcut '#{$1}' is not defined. Ignoring..."
+    error %Q(Shortcut '#{$1}' is not defined. Ignoring...)
   else
-    puts "Don't know how to handle '#{command}'. Ignoring..."
+    error %Q(Don't know how to handle '#{command}'. Ignoring...)
   end
 end
