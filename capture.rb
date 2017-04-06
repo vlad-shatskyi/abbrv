@@ -17,6 +17,8 @@ def to_letter(libnotify_key_name)
     '='
   when 'minus'
     '-'
+  when 'semicolon'
+    ';'
   else
     key_name
   end
