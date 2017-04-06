@@ -18,7 +18,7 @@ def error(message)
 end
 
 def show_gnome_shell_notification(command)
-  `gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval 'global.stage.remove_actor(text); text = new imports.gi.St.Label({ style_class: "helloworld-label", text: "#{command}" }); global.stage.add_actor(text); text.set_position(2500, 10); imports.mainloop.timeout_add(2000, () => global.stage.remove_actor(text))'`
+  `gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval 'global.stage.remove_actor(text); text = new imports.gi.St.Label({ text: "#{command}" }); global.stage.add_actor(text); text.set_position(2500, 10); imports.mainloop.timeout_add(2000, () => global.stage.remove_actor(text))'`
 end
 
 while true
