@@ -7,7 +7,7 @@
   "tw": "focus teamviewer",
   "e": "focus emacs",
   "r": "focus rubymine",
-  "tl": "focus telegram",
+  "=": "focus telegram",
   "m": "focus wmail",
   "s": "focus slack",
   "t": "focus tilix",

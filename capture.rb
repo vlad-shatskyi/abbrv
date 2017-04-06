@@ -6,6 +6,22 @@ cmd = "stdbuf -oL -- libinput-debug-events --show-keycodes --device /dev/input/e
 is_alt_pressed = false
 abbreviation = ''
 
+def alt?(key)
+  key == 'KEY_LEFTALT' || key == 'KEY_RIGHTALT'
+end
+
+def to_letter(libnotify_key_name)
+  key_name = libnotify_key_name.split('_').last.downcase
+  case key_name
+  when 'equal'
+    '='
+  when 'minus'
+    '-'
+  else
+    key_name
+  end
+end
+
 PTY.spawn( cmd ) do |stdout, stdin, pid|
   # Do stuff with the output here. Just printing to show it works
   stdout.each do |line| 
@@ -13,8 +29,8 @@ PTY.spawn( cmd ) do |stdout, stdin, pid|
 
     if is_alt_pressed
       if action == 'pressed' && key != 'KEY_TAB'
-        abbreviation += key.chars.last.downcase
-      elsif action == 'released' && key == 'KEY_LEFTALT'
+        abbreviation += to_letter(key)
+      elsif action == 'released' && alt?(key)
         if abbreviation.size > 0
           puts abbreviation 
           #exit
@@ -24,7 +40,7 @@ PTY.spawn( cmd ) do |stdout, stdin, pid|
         abbreviation = ''
       end
     else
-      if action == 'pressed' && key == 'KEY_LEFTALT'
+      if action == 'pressed' && alt?(key)
         is_alt_pressed = true
       end
     end
