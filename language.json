@@ -1,0 +1,15 @@
+{
+  "c": "copy",
+  "mwf": "make window fullscreen",
+  "w": "close current window",
+  "j": "focus chrome",
+  "sk": "focus skype",
+  "tw": "focus teamviewer",
+  "e": "focus emacs",
+  "r": "focus rubymine",
+  "t": "focus telegram",
+  "m": "focus wmail",
+  "s": "focus slack",
+  "t": "focus tilix",
+  "dw": "open ~/Downloads"
+}
