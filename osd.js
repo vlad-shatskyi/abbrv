@@ -8,13 +8,13 @@ iteration = (typeof iteration === 'undefined') ? 0 : (iteration + 1);
 OsdWindow = new Lang.Class({
     Name: 'OsdWindow' + iteration,
 
-    _init: function(monitorIndex) {
+    _init: function(label) {
+        let monitorIndex = 0;
         this.actor = new imports.gi.St.Widget({ x_expand: true,
             y_expand: true,
             x_align: imports.gi.Clutter.ActorAlign.CENTER,
             y_align: imports.gi.Clutter.ActorAlign.CENTER });
 
-        this._monitorIndex = monitorIndex;
         let constraint = new Layout.MonitorConstraint({ index: monitorIndex });
         this.actor.add_constraint(constraint);
 
@@ -25,22 +25,17 @@ OsdWindow = new Lang.Class({
         this._label = new imports.gi.St.Label({
             width: 500
         });
+        this._label.visible = true;
+        this._label.text = label;
         this._label.set_style('font-size: 20px; font-weight: normal; margin-top: 15px');
         this._box.add(this._label);
 
         this._hideTimeoutId = 0;
-        this._reset();
 
-        let monitor = Main.layoutManager.monitors[this._monitorIndex];
+        let monitor = Main.layoutManager.monitors[monitorIndex];
         this._box.translation_y = -(monitor.height / 10);
 
         Main.uiGroup.add_child(this.actor);
-    },
-
-    setLabel: function(label) {
-        this._label.visible = (label != undefined);
-        if (label)
-            this._label.text = label;
     },
 
     show: function() {
@@ -78,19 +73,13 @@ OsdWindow = new Lang.Class({
                 time: FADE_TIME,
                 transition: 'easeOutQuad',
                 onComplete: Lang.bind(this, function() {
-                    this._reset();
+                    this.actor.hide();
                     Meta.enable_unredirect_for_screen(global.screen);
                 })
             });
         return GLib.SOURCE_REMOVE;
-    },
-
-    _reset: function() {
-        this.actor.hide();
-        this.setLabel(null);
-    },
+    }
 });
 
-osdWindow = new OsdWindow(0);
-osdWindow.setLabel('label that is so long');
+osdWindow = new OsdWindow('label that is so long');
 osdWindow.show();
