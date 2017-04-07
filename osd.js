@@ -2,55 +2,8 @@ Layout = imports.ui.layout;
 
 HIDE_TIMEOUT = 5000;
 FADE_TIME = 0.1;
-LEVEL_ANIMATION_TIME = 0.1;
 
 iteration = (typeof iteration === 'undefined') ? 0 : (iteration + 1);
-
-LevelBar = new Lang.Class({
-    Name: 'LevelBar' + iteration,
-
-    _init: function() {
-        this._level = 0;
-
-        this.actor = new imports.gi.St.Bin({ style_class: 'level',
-            x_align: imports.gi.St.Align.START,
-            y_fill: true });
-        this._bar = new imports.gi.St.Widget({ style_class: 'level-bar' });
-
-        this.actor.set_child(this._bar);
-
-        this.actor.connect('notify::width', () => { this.level = this.level; });
-    },
-
-    get level() {
-        return this._level;
-    },
-
-    set level(value) {
-        this._level = Math.max(0, Math.min(value, 100));
-
-        let alloc = this.actor.get_allocation_box();
-        let newWidth = Math.round((alloc.x2 - alloc.x1) * this._level / 100);
-        if (newWidth != this._bar.width)
-            this._bar.width = newWidth;
-    }
-});
-
-OsdWindowConstraint = new Lang.Class({
-    Name: 'OsdWindowConstraint' + iteration,
-    Extends: imports.gi.Clutter.Constraint,
-
-    _init: function(props) {
-        this._minSize = 0;
-        this.parent(props);
-    },
-
-    set minSize(v) {
-        this._minSize = v;
-        if (this.actor)
-            this.actor.queue_relayout();
-    },
-});
 
 OsdWindow = new Lang.Class({
     Name: 'OsdWindow' + iteration,
@@ -65,17 +18,12 @@ OsdWindow = new Lang.Class({
         let constraint = new Layout.MonitorConstraint({ index: monitorIndex });
         this.actor.add_constraint(constraint);
 
-        this._boxConstraint = new OsdWindowConstraint();
         this._box = new imports.gi.St.BoxLayout({ style_class: 'osd-window',
             vertical: true });
-        this._box.add_constraint(this._boxConstraint);
         this.actor.add_actor(this._box);
 
         this._label = new imports.gi.St.Label();
         this._box.add(this._label);
-
-        this._level = new LevelBar();
-        this._box.add(this._level.actor);
 
         this._hideTimeoutId = 0;
         this._reset();
@@ -93,19 +41,6 @@ OsdWindow = new Lang.Class({
         this._label.visible = (label != undefined);
         if (label)
             this._label.text = label;
-    },
-
-    setLevel: function(level) {
-        this._level.actor.visible = (level != undefined);
-        if (level != undefined) {
-            if (this.actor.visible)
-                imports.ui.tweener.addTween(this._level,
-                    { level: level,
-                        time: LEVEL_ANIMATION_TIME,
-                        transition: 'easeOutQuad' });
-            else
-                this._level.level = level;
-        }
     },
 
     show: function() {
@@ -153,7 +88,6 @@ OsdWindow = new Lang.Class({
     _reset: function() {
         this.actor.hide();
         this.setLabel(null);
-        this.setLevel(null);
     },
 
     _relayout: function() {
@@ -161,16 +95,10 @@ OsdWindow = new Lang.Class({
         if (!monitor)
             return;
 
-        let scalew = monitor.width / 640.0;
-        let scaleh = monitor.height / 480.0;
-        let scale = Math.min(scalew, scaleh);
-        let popupSize = 110 * Math.max(1, scale);
-
         this._box.translation_y = monitor.height / 4;
-        this._boxConstraint.minSize = popupSize;
     }
 });
 
 osdWindow = new OsdWindow(0);
-osdWindow.setLabel('label');
+osdWindow.setLabel('label that is so long');
 osdWindow.show();
