@@ -12,10 +12,10 @@ LevelBar = new Lang.Class({
     _init: function() {
         this._level = 0;
 
-        this.actor = new St.Bin({ style_class: 'level',
-            x_align: St.Align.START,
+        this.actor = new imports.gi.St.Bin({ style_class: 'level',
+            x_align: imports.gi.St.Align.START,
             y_fill: true });
-        this._bar = new St.Widget({ style_class: 'level-bar' });
+        this._bar = new imports.gi.St.Widget({ style_class: 'level-bar' });
 
         this.actor.set_child(this._bar);
 
@@ -38,7 +38,7 @@ LevelBar = new Lang.Class({
 
 OsdWindowConstraint = new Lang.Class({
     Name: 'OsdWindowConstraint' + iteration,
-    Extends: Clutter.Constraint,
+    Extends: imports.gi.Clutter.Constraint,
 
     _init: function(props) {
         this._minSize = 0;
@@ -56,22 +56,22 @@ OsdWindow = new Lang.Class({
     Name: 'OsdWindow' + iteration,
 
     _init: function(monitorIndex) {
-        this.actor = new St.Widget({ x_expand: true,
+        this.actor = new imports.gi.St.Widget({ x_expand: true,
             y_expand: true,
-            x_align: Clutter.ActorAlign.CENTER,
-            y_align: Clutter.ActorAlign.CENTER });
+            x_align: imports.gi.Clutter.ActorAlign.CENTER,
+            y_align: imports.gi.Clutter.ActorAlign.CENTER });
 
         this._monitorIndex = monitorIndex;
         let constraint = new Layout.MonitorConstraint({ index: monitorIndex });
         this.actor.add_constraint(constraint);
 
         this._boxConstraint = new OsdWindowConstraint();
-        this._box = new St.BoxLayout({ style_class: 'osd-window',
+        this._box = new imports.gi.St.BoxLayout({ style_class: 'osd-window',
             vertical: true });
         this._box.add_constraint(this._boxConstraint);
         this.actor.add_actor(this._box);
 
-        this._label = new St.Label();
+        this._label = new imports.gi.St.Label();
         this._box.add(this._label);
 
         this._level = new LevelBar();
@@ -82,7 +82,7 @@ OsdWindow = new Lang.Class({
 
         Main.layoutManager.connect('monitors-changed',
             Lang.bind(this, this._relayout));
-        let themeContext = St.ThemeContext.get_for_stage(global.stage);
+        let themeContext = imports.gi.St.ThemeContext.get_for_stage(global.stage);
         themeContext.connect('notify::scale-factor',
             Lang.bind(this, this._relayout));
         this._relayout();
@@ -99,7 +99,7 @@ OsdWindow = new Lang.Class({
         this._level.actor.visible = (level != undefined);
         if (level != undefined) {
             if (this.actor.visible)
-                Tweener.addTween(this._level,
+                imports.ui.tweener.addTween(this._level,
                     { level: level,
                         time: LEVEL_ANIMATION_TIME,
                         transition: 'easeOutQuad' });
@@ -115,15 +115,15 @@ OsdWindow = new Lang.Class({
             this.actor.opacity = 0;
             this.actor.get_parent().set_child_above_sibling(this.actor, null);
 
-            Tweener.addTween(this.actor,
+            imports.ui.tweener.addTween(this.actor,
                 { opacity: 255,
                     time: FADE_TIME,
                     transition: 'easeOutQuad' });
         }
 
         if (this._hideTimeoutId)
-            Mainloop.source_remove(this._hideTimeoutId);
-        this._hideTimeoutId = Mainloop.timeout_add(HIDE_TIMEOUT,
+            imports.mainloop.source_remove(this._hideTimeoutId);
+        this._hideTimeoutId = imports.mainloop.timeout_add(HIDE_TIMEOUT,
             Lang.bind(this, this._hide));
         GLib.Source.set_name_by_id(this._hideTimeoutId, '[gnome-shell] this._hide');
     },
@@ -132,13 +132,13 @@ OsdWindow = new Lang.Class({
         if (!this._hideTimeoutId)
             return;
 
-        Mainloop.source_remove(this._hideTimeoutId);
+        imports.mainloop.source_remove(this._hideTimeoutId);
         this._hide();
     },
 
     _hide: function() {
         this._hideTimeoutId = 0;
-        Tweener.addTween(this.actor,
+        imports.ui.tweener.addTween(this.actor,
             { opacity: 0,
                 time: FADE_TIME,
                 transition: 'easeOutQuad',
@@ -157,10 +157,9 @@ OsdWindow = new Lang.Class({
     },
 
     _relayout: function() {
-        /* assume 110x110 on a 640x480 display and scale from there */
         let monitor = Main.layoutManager.monitors[this._monitorIndex];
         if (!monitor)
-            return; // we are about to be removed
+            return;
 
         let scalew = monitor.width / 640.0;
         let scaleh = monitor.height / 480.0;
