@@ -16,13 +16,27 @@ def show_abbreviations
   `gedit language.json`
 end
 
+def escape_double_quotes(string)
+  string.gsub('"', '\\"')
+end
+
 def error(message)
-  escaped_message = message.gsub('"', '\\"')
-  `notify-send  --hint=int:transient:1 --hint=string:sound-name:bell "#{escaped_message}"`
+  `notify-send  --hint=int:transient:1 --hint=string:sound-name:bell "#{escape_double_quotes(message)}"`
 end
 
 def show_gnome_shell_notification(command)
-  `gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval 'global.stage.remove_actor(text); text = new imports.gi.St.Label({ text: "#{command}" }); global.stage.add_actor(text); text.set_position(2500, 10); imports.mainloop.timeout_add(2000, () => global.stage.remove_actor(text))'`
+  shell_code = <<-JS
+    global.stage.remove_actor(text);
+    text = new imports.gi.St.Label({ text: "#{command}" });
+    global.stage.add_actor(text);
+    text.set_position(2500, 10);
+    imports.mainloop.timeout_add(2000, () => global.stage.remove_actor(text));
+  JS
+
+  prepared_shell_code = escape_double_quotes(shell_code).gsub("\n", "\\\n")
+
+
+  `gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval "#{prepared_shell_code}"`
 end
 
 while true
