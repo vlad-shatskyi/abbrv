@@ -18,7 +18,7 @@ OsdWindow = new Lang.Class({
         let constraint = new Layout.MonitorConstraint({ index: monitorIndex });
         this.actor.add_constraint(constraint);
 
-        this._box = new imports.gi.St.BoxLayout({ style_class: 'osd-window',
+        this._box = new imports.gi.St.BoxLayout({ style_class: 'jfodiosd-window',
             vertical: true });
         this.actor.add_actor(this._box);
 
