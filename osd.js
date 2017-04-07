@@ -1,6 +1,6 @@
 Layout = imports.ui.layout;
 
-HIDE_TIMEOUT = 500;
+HIDE_TIMEOUT = 200;
 FADE_TIME = 0.1;
 
 iteration = (typeof iteration === 'undefined') ? 0 : (iteration + 1);
@@ -56,8 +56,7 @@ OsdWindow = new Lang.Class({
 
         if (this._hideTimeoutId)
             imports.mainloop.source_remove(this._hideTimeoutId);
-        this._hideTimeoutId = imports.mainloop.timeout_add(HIDE_TIMEOUT,
-            Lang.bind(this, this._hide));
+        this._hideTimeoutId = imports.mainloop.timeout_add(HIDE_TIMEOUT, () => this._hide());
         GLib.Source.set_name_by_id(this._hideTimeoutId, '[gnome-shell] this._hide');
     },
 
@@ -75,13 +74,8 @@ OsdWindow = new Lang.Class({
             { opacity: 0,
                 time: FADE_TIME,
                 transition: 'easeOutQuad',
-                onComplete: Lang.bind(this, function() {
-                    this.actor.hide();
-                })
+                onComplete: () => this.actor.hide()
             });
         return GLib.SOURCE_REMOVE;
     }
 });
-
-osdWindow = new OsdWindow('label that is so long');
-osdWindow.show();

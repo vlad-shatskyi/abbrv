@@ -25,19 +25,12 @@ def error(message)
 end
 
 def show_gnome_shell_notification(command)
-  shell_code = <<-JS
-    global.stage.remove_actor(text);
-    text = new imports.gi.St.Label({ text: "#{command}" });
-    global.stage.add_actor(text);
-    text.set_position(2500, 10);
-    imports.mainloop.timeout_add(2000, () => global.stage.remove_actor(text));
-  JS
-
-  prepared_shell_code = escape_double_quotes(shell_code).gsub("\n", "\\\n")
-
-
-  `gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval "#{prepared_shell_code}"`
+  prepared_command = escape_double_quotes(command).gsub("\n", "\\\n")
+  `gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval "new OsdWindow('#{prepared_command}').show();"`
 end
+
+prepared_shell_code = escape_double_quotes(File.read('osd.js')).gsub("\n", "\\\n")
+`gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval "#{prepared_shell_code}"`
 
 while true
   command = $stdin.gets.chomp
