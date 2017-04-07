@@ -13,14 +13,14 @@ OsdWindow = new Lang.Class({
         this.actor = new imports.gi.St.Widget({ x_expand: true,
             y_expand: true,
             x_align: imports.gi.Clutter.ActorAlign.CENTER,
-            y_align: imports.gi.Clutter.ActorAlign.CENTER });
+            y_align: imports.gi.Clutter.ActorAlign.CENTER
+        });
 
-        let constraint = new Layout.MonitorConstraint({ index: monitorIndex });
-        this.actor.add_constraint(constraint);
+        this.actor.add_constraint(new Layout.MonitorConstraint({ index: monitorIndex }));
 
-        this._box = new imports.gi.St.BoxLayout({ style_class: 'osd-window',
+        let box = new imports.gi.St.BoxLayout({ style_class: 'osd-window',
             vertical: true });
-        this.actor.add_actor(this._box);
+        this.actor.add_actor(box);
 
         this._label = new imports.gi.St.Label({
             width: 500
@@ -28,12 +28,12 @@ OsdWindow = new Lang.Class({
         this._label.visible = true;
         this._label.text = label;
         this._label.set_style('font-size: 20px; font-weight: normal; margin-top: 15px');
-        this._box.add(this._label);
+        box.add(this._label);
 
         this._hideTimeoutId = 0;
 
         let monitor = Main.layoutManager.monitors[monitorIndex];
-        this._box.translation_y = -(monitor.height / 10);
+        box.translation_y = -(monitor.height / 10);
 
         Main.uiGroup.add_child(this.actor);
     },
