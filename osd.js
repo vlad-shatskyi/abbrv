@@ -1,6 +1,6 @@
 Layout = imports.ui.layout;
 
-HIDE_TIMEOUT = 5000;
+HIDE_TIMEOUT = 500;
 FADE_TIME = 0.1;
 
 iteration = (typeof iteration === 'undefined') ? 0 : (iteration + 1);
@@ -8,7 +8,7 @@ iteration = (typeof iteration === 'undefined') ? 0 : (iteration + 1);
 OsdWindow = new Lang.Class({
     Name: 'OsdWindow' + iteration,
 
-    _init: function(label) {
+    _init: function(labelText) {
         let monitorIndex = 0;
         this.actor = new imports.gi.St.Widget({ x_expand: true,
             y_expand: true,
@@ -18,17 +18,21 @@ OsdWindow = new Lang.Class({
 
         this.actor.add_constraint(new Layout.MonitorConstraint({ index: monitorIndex }));
 
-        let box = new imports.gi.St.BoxLayout({ style_class: 'osd-window',
-            vertical: true });
+        let box = new imports.gi.St.BoxLayout({
+            style_class: 'osd-window',
+            vertical: true
+        });
+
         this.actor.add_actor(box);
 
-        this._label = new imports.gi.St.Label({
-            width: 500
+        let label = new imports.gi.St.Label({
+            width: 500,
+            visible: true,
+            text: labelText,
+            style: 'font-size: 20px; font-weight: normal; margin-top: 15px'
         });
-        this._label.visible = true;
-        this._label.text = label;
-        this._label.set_style('font-size: 20px; font-weight: normal; margin-top: 15px');
-        box.add(this._label);
+
+        box.add(label);
 
         this._hideTimeoutId = 0;
 
@@ -40,7 +44,6 @@ OsdWindow = new Lang.Class({
 
     show: function() {
         if (!this.actor.visible) {
-            Meta.disable_unredirect_for_screen(global.screen);
             this.actor.show();
             this.actor.opacity = 0;
             this.actor.get_parent().set_child_above_sibling(this.actor, null);
@@ -74,7 +77,6 @@ OsdWindow = new Lang.Class({
                 transition: 'easeOutQuad',
                 onComplete: Lang.bind(this, function() {
                     this.actor.hide();
-                    Meta.enable_unredirect_for_screen(global.screen);
                 })
             });
         return GLib.SOURCE_REMOVE;
