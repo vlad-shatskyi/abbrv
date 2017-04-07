@@ -1,6 +1,6 @@
 Layout = imports.ui.layout;
 
-HIDE_TIMEOUT = 500;
+HIDE_TIMEOUT = 5000;
 FADE_TIME = 0.1;
 LEVEL_ANIMATION_TIME = 0.1;
 
@@ -71,9 +71,6 @@ OsdWindow = new Lang.Class({
         this._box.add_constraint(this._boxConstraint);
         this.actor.add_actor(this._box);
 
-        this._icon = new St.Icon();
-        this._box.add(this._icon, { expand: true });
-
         this._label = new St.Label();
         this._box.add(this._label);
 
@@ -90,10 +87,6 @@ OsdWindow = new Lang.Class({
             Lang.bind(this, this._relayout));
         this._relayout();
         Main.uiGroup.add_child(this.actor);
-    },
-
-    setIcon: function(icon) {
-        this._icon.gicon = icon;
     },
 
     setLabel: function(label) {
@@ -116,9 +109,6 @@ OsdWindow = new Lang.Class({
     },
 
     show: function() {
-        if (!this._icon.gicon)
-            return;
-
         if (!this.actor.visible) {
             Meta.disable_unredirect_for_screen(global.screen);
             this.actor.show();
@@ -177,8 +167,6 @@ OsdWindow = new Lang.Class({
         let scale = Math.min(scalew, scaleh);
         let popupSize = 110 * Math.max(1, scale);
 
-        let scaleFactor = St.ThemeContext.get_for_stage(global.stage).scale_factor;
-        this._icon.icon_size = popupSize / (2 * scaleFactor);
         this._box.translation_y = monitor.height / 4;
         this._boxConstraint.minSize = popupSize;
     }
@@ -186,5 +174,4 @@ OsdWindow = new Lang.Class({
 
 osdWindow = new OsdWindow(0);
 osdWindow.setLabel('label');
-osdWindow.setIcon(Gio.Icon.new_for_string('starred'));
 osdWindow.show();
