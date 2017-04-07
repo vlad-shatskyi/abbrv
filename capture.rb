@@ -3,11 +3,12 @@ STDOUT.sync = true
 
 cmd = "stdbuf -oL -- libinput-debug-events --show-keycodes --device /dev/input/event0 | awk -F' ' '{ print $4, $6}'"
 
-is_alt_pressed = false
-abbreviation = ''
-
 def alt?(key)
   key == 'KEY_LEFTALT' || key == 'KEY_RIGHTALT'
+end
+
+def allowed_letter?(key)
+  '-=qwertyuiop[]asdfghjkl;\'zxcvbnm,./'.include?(key)
 end
 
 def to_letter(libnotify_key_name)
@@ -24,27 +25,27 @@ def to_letter(libnotify_key_name)
   end
 end
 
-PTY.spawn( cmd ) do |stdout, stdin, pid|
-  # Do stuff with the output here. Just printing to show it works
-  stdout.each do |line| 
+is_alt_pressed = false
+abbreviation = ''
+
+PTY.spawn(cmd) do |stdout, _, _|
+  stdout.each do |line|
     key, action = line.split(' ')
 
     if is_alt_pressed
-      if action == 'pressed' && key != 'KEY_TAB'
-        abbreviation += to_letter(key)
+      letter = to_letter(key)
+      if action == 'pressed' && allowed_letter?(letter)
+        abbreviation += letter
       elsif action == 'released' && alt?(key)
         if abbreviation.size > 0
-          puts abbreviation 
-          #exit
+          puts abbreviation
         end
 
         is_alt_pressed = false
         abbreviation = ''
       end
-    else
-      if action == 'pressed' && alt?(key)
-        is_alt_pressed = true
-      end
+    elsif action == 'pressed' && alt?(key)
+      is_alt_pressed = true
     end
   end
 end
