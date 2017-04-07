@@ -11,5 +11,6 @@
   "m": "focus wmail",
   "s": "focus slack",
   "t": "focus tilix",
-  "dw": "open ~/Downloads"
+  "dw": "open ~/Downloads",
+  "sa": "show abbreviations"
 }

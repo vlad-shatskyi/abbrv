@@ -12,6 +12,10 @@ def open(openable)
   `gio open #{openable}`
 end
 
+def show_abbreviations
+  `gedit language.json`
+end
+
 def error(message)
   escaped_message = message.gsub('"', '\\"')
   `notify-send  --hint=int:transient:1 --hint=string:sound-name:bell "#{escaped_message}"`
@@ -29,6 +33,8 @@ while true
   case command
   when 'close current window'
     close_current_window
+  when 'show abbreviations'
+    show_abbreviations
   when /^focus ([a-z]+)$/
     launch_or_focus($1)
   when /^open ([^ ]+)$/
