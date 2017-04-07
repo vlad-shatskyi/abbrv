@@ -18,22 +18,22 @@ OsdWindow = new Lang.Class({
         let constraint = new Layout.MonitorConstraint({ index: monitorIndex });
         this.actor.add_constraint(constraint);
 
-        this._box = new imports.gi.St.BoxLayout({ style_class: 'jfodiosd-window',
+        this._box = new imports.gi.St.BoxLayout({ style_class: 'osd-window',
             vertical: true });
         this.actor.add_actor(this._box);
 
-        this._label = new imports.gi.St.Label();
+        this._label = new imports.gi.St.Label({
+            width: 500
+        });
+        this._label.set_style('font-size: 20px; font-weight: normal; margin-top: 15px');
         this._box.add(this._label);
 
         this._hideTimeoutId = 0;
         this._reset();
 
-        Main.layoutManager.connect('monitors-changed',
-            Lang.bind(this, this._relayout));
-        let themeContext = imports.gi.St.ThemeContext.get_for_stage(global.stage);
-        themeContext.connect('notify::scale-factor',
-            Lang.bind(this, this._relayout));
-        this._relayout();
+        let monitor = Main.layoutManager.monitors[this._monitorIndex];
+        this._box.translation_y = -(monitor.height / 10);
+
         Main.uiGroup.add_child(this.actor);
     },
 
@@ -89,14 +89,6 @@ OsdWindow = new Lang.Class({
         this.actor.hide();
         this.setLabel(null);
     },
-
-    _relayout: function() {
-        let monitor = Main.layoutManager.monitors[this._monitorIndex];
-        if (!monitor)
-            return;
-
-        this._box.translation_y = monitor.height / 4;
-    }
 });
 
 osdWindow = new OsdWindow(0);
