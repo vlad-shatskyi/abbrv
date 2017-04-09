@@ -29,6 +29,10 @@ def show_gnome_shell_notification(command)
   `gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval "new OsdWindow('#{prepared_command}').show();"`
 end
 
+def capitalize(sentence)
+  sentence.split(' ').map(&:capitalize).join(' ')
+end
+
 prepared_shell_code = escape_double_quotes(File.read('osd.js')).gsub("\n", "\\\n")
 `gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval "#{prepared_shell_code}"`
 
@@ -36,7 +40,7 @@ while true
   command = $stdin.gets.chomp
 
   puts command
-  show_gnome_shell_notification(command)
+  show_gnome_shell_notification(capitalize(command))
   case command
   when 'close current window'
     close_current_window
