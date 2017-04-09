@@ -3,7 +3,7 @@ STDOUT.sync = true
 
 class Capturer
   CAPTURE_COMMAND = "stdbuf -oL -- libinput-debug-events --show-keycodes --device /dev/input/event0 | awk -F' ' '{ print $4, $6}'"
-  ALLOWED_LETTERS = '-=qwertyuiop[]asdfghjkl;\'zxcvbnm,./'
+  LETTERS_TO_CAPTURE = '-=qwertyuiop[]asdfghjkl;\'zxcvbnm,./'
 
   KEYS_MAPPING = {
     'equal' => '=',
@@ -12,29 +12,27 @@ class Capturer
   }
 
   def initialize
-    @is_alt_pressed = false
-    @abbreviation = ''
+    @should_capture = false
+    @captured = ''
   end
 
   def on_abbreviation
     PTY.spawn(CAPTURE_COMMAND) do |stdout, _, _|
       stdout.each do |line|
         key, action = line.split(' ')
+        letter = to_letter(key)
 
-        if @is_alt_pressed
-          letter = to_letter(key)
-          if action == 'pressed' && ALLOWED_LETTERS.include?(letter)
-            @abbreviation += letter
-          elsif action == 'released' && alt?(key)
-            if @abbreviation.size > 0
-              yield @abbreviation
-            end
+        if alt?(key)
+          if action == 'pressed'
+            @should_capture = true
+          elsif action == 'released'
+            yield @captured unless @captured.empty?
 
-            @is_alt_pressed = false
-            @abbreviation = ''
+            @should_capture = false
+            @captured = ''
           end
-        elsif action == 'pressed' && alt?(key)
-          @is_alt_pressed = true
+        elsif @should_capture && LETTERS_TO_CAPTURE.include?(letter) && action == 'pressed'
+          @captured += letter
         end
       end
     end
