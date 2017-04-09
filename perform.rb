@@ -36,23 +36,28 @@ end
 prepared_shell_code = escape_double_quotes(File.read('osd.js')).gsub("\n", "\\\n")
 `gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval "#{prepared_shell_code}"`
 
-while true
-  command = $stdin.gets.chomp
-
-  puts command
-  show_gnome_shell_notification(capitalize(command))
-  case command
-  when 'close current window'
-    close_current_window
-  when 'show abbreviations'
-    show_abbreviations
-  when /^focus ([a-z]+)$/
-    launch_or_focus($1)
-  when /^open ([^ ]+)$/
-    open($1)
-  when /^([a-z]+) is not defined$/
-    error %Q(Shortcut '#{$1}' is not defined. Ignoring...)
-  else
-    error %Q(Don't know how to handle '#{command}'. Ignoring...)
+class Performer
+  def perform(command)
+    puts command
+    show_gnome_shell_notification(capitalize(command))
+    case command
+    when 'close current window'
+      close_current_window
+    when 'show abbreviations'
+      show_abbreviations
+    when /^focus ([a-z]+)$/
+      launch_or_focus($1)
+    when /^open ([^ ]+)$/
+      open($1)
+    when /^([a-z]+) is not defined$/
+      error %Q(Shortcut '#{$1}' is not defined. Ignoring...)
+    else
+      error %Q(Don't know how to handle '#{command}'. Ignoring...)
+    end
   end
+end
+
+if __FILE__ == $PROGRAM_NAME
+  performer = Performer.new
+  performer.perform($stdin.gets.chomp) while true
 end
