@@ -3,6 +3,8 @@ STDOUT.sync = true
 
 class Capturer
   CAPTURE_COMMAND = "stdbuf -oL -- libinput-debug-events --show-keycodes --device /dev/input/event0 | awk -F' ' '{ print $4, $6}'"
+  ALLOWED_LETTERS = '-=qwertyuiop[]asdfghjkl;\'zxcvbnm,./'
+
   KEYS_MAPPING = {
     'equal' => '=',
     'minus' => '-',
@@ -21,7 +23,7 @@ class Capturer
 
         if @is_alt_pressed
           letter = to_letter(key)
-          if action == 'pressed' && allowed_letter?(letter)
+          if action == 'pressed' && ALLOWED_LETTERS.include?(letter)
             @abbreviation += letter
           elsif action == 'released' && alt?(key)
             if @abbreviation.size > 0
@@ -38,12 +40,10 @@ class Capturer
     end
   end
 
+  private
+
   def alt?(key)
     key == 'KEY_LEFTALT' || key == 'KEY_RIGHTALT'
-  end
-
-  def allowed_letter?(key)
-    '-=qwertyuiop[]asdfghjkl;\'zxcvbnm,./'.include?(key)
   end
 
   def to_letter(libnotify_key_name)
