@@ -13,8 +13,8 @@ class Expander
   end
 end
 
-expander = Expander.new(language_file_path)
 
-while true
-  puts expander.expand($stdin.gets.chomp)
+if __FILE__ == $PROGRAM_NAME
+  expander = Expander.new(language_file_path)
+  puts expander.expand($stdin.gets.chomp) while true
 end

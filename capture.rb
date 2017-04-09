@@ -56,6 +56,8 @@ class Capturer
   end
 end
 
-Capturer.new.on_abbreviation do |abbreviation|
-  puts abbreviation
+if __FILE__ == $PROGRAM_NAME
+  Capturer.new.on_abbreviation do |abbreviation|
+    puts abbreviation
+  end
 end
