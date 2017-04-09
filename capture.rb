@@ -3,6 +3,11 @@ STDOUT.sync = true
 
 class Capturer
   CAPTURE_COMMAND = "stdbuf -oL -- libinput-debug-events --show-keycodes --device /dev/input/event0 | awk -F' ' '{ print $4, $6}'"
+  KEYS_MAPPING = {
+    'equal' => '=',
+    'minus' => '-',
+    'semicolon' => ';'
+  }
 
   def initialize
     @is_alt_pressed = false
@@ -43,16 +48,7 @@ class Capturer
 
   def to_letter(libnotify_key_name)
     key_name = libnotify_key_name.split('_').last.downcase
-    case key_name
-    when 'equal'
-      '='
-    when 'minus'
-      '-'
-    when 'semicolon'
-      ';'
-    else
-      key_name
-    end
+    KEYS_MAPPING.fetch(key_name, key_name)
   end
 end
 
