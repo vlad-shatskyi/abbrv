@@ -6,6 +6,7 @@ class Capturer
   LETTERS_TO_CAPTURE = '-=qwertyuiop[]asdfghjkl;\'zxcvbnm,./'
 
   KEYS_MAPPING = {
+    'grave' => '`',
     'equal' => '=',
     'minus' => '-',
     'semicolon' => ';'

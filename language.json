@@ -4,7 +4,7 @@
   "w": "close current window",
   "j": "focus chrome",
   "sk": "focus skype",
-  "tw": "focus teamviewer",
+  "i": "focus teamviewer",
   "e": "focus emacs",
   "r": "focus rubymine",
   "=": "focus telegram",
