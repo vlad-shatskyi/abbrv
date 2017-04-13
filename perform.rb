@@ -5,7 +5,7 @@ def close_current_window
 end
 
 def launch_or_focus(window_name)
-  `wmctrl -a #{window_name}`
+  `gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval "Main.activateWindow(global.screen.get_workspace_by_index(0).list_windows().find(w => w.get_wm_class() == '#{window_name}'))"`
 end
 
 def open(openable)
@@ -45,7 +45,7 @@ class Performer
       close_current_window
     when 'show abbreviations'
       show_abbreviations
-    when /^focus ([a-z]+)$/
+    when /^focus ([-\w]+)$/
       launch_or_focus($1)
     when /^open ([^ ]+)$/
       open($1)
