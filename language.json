@@ -5,12 +5,12 @@
   "j": "focus Google-chrome",
   "sk": "focus skypeforlinux",
   "i": "focus TeamViewer",
-  "e": "focus emacs",
+  "e": "focus Emacs",
   "r": "focus jetbrains-rubymine",
   "=": "focus TelegramDesktop",
   "m": "focus wmail",
   "s": "focus Slack",
-  "t": "focus tilix",
+  "t": "focus Tilix",
   "dw": "open ~/Downloads",
   "sa": "show abbreviations"
 }

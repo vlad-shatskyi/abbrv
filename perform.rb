@@ -4,10 +4,6 @@ def close_current_window
   `xdotool getactivewindow windowkill`
 end
 
-def launch_or_focus(window_name)
-  `gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval "Main.activateWindow(global.screen.get_workspace_by_index(0).list_windows().find(w => w.get_wm_class() == '#{window_name}'))"`
-end
-
 def open(openable)
   `gio open #{openable}`
 end
@@ -24,29 +20,25 @@ def error(message)
   `notify-send  --hint=int:transient:1 --hint=string:sound-name:bell "#{escape_double_quotes(message)}"`
 end
 
-def show_gnome_shell_notification(command)
-  prepared_command = escape_double_quotes(command).gsub("\n", "\\\n")
-  `gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval "new OsdWindow('#{prepared_command}').show();"`
-end
-
 def capitalize(sentence)
   sentence.split(' ').map(&:capitalize).join(' ')
 end
 
-prepared_shell_code = escape_double_quotes(File.read('osd.js')).gsub("\n", "\\\n")
-`gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval "#{prepared_shell_code}"`
-
 class Performer
+  def initialize
+    @desktop_environment = GnomeShell.new
+  end
+
   def perform(command)
     puts command
-    show_gnome_shell_notification(capitalize(command))
+    @desktop_environment.show_notification(capitalize(command))
     case command
     when 'close current window'
       close_current_window
     when 'show abbreviations'
       show_abbreviations
     when /^focus ([-\w]+)$/
-      launch_or_focus($1)
+      @desktop_environment.launch_or_focus($1)
     when /^open ([^ ]+)$/
       open($1)
     when /^([a-z]+) is not defined$/
@@ -60,4 +52,36 @@ end
 if __FILE__ == $PROGRAM_NAME
   performer = Performer.new
   performer.perform($stdin.gets.chomp) while true
+end
+
+class DesktopEnvironment
+  def show_notification(message)
+    fail NotImplementedError
+  end
+
+  def launch_or_focus(window)
+    fail NotImplementedError
+  end
+end
+
+class GnomeShell < DesktopEnvironment
+  def initialize
+    prepared_shell_code = escape_double_quotes(File.read('osd.js')).gsub("\n", "\\\n")
+    shell_eval(prepared_shell_code)
+  end
+
+  def show_notification(message)
+    prepared_command = escape_double_quotes(message).gsub("\n", "\\\n")
+    shell_eval("new OsdWindow('#{prepared_command}').show();")
+  end
+
+  def launch_or_focus(window)
+    shell_eval("Main.activateWindow(global.screen.get_workspace_by_index(0).list_windows().find(w => w.get_wm_class() == '#{window}'))")
+  end
+
+  private
+
+  def shell_eval(js_code)
+    `gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval "#{js_code}"`
+  end
 end
