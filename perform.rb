@@ -49,11 +49,6 @@ class Performer
   end
 end
 
-if __FILE__ == $PROGRAM_NAME
-  performer = Performer.new
-  performer.perform($stdin.gets.chomp) while true
-end
-
 class DesktopEnvironment
   def show_notification(message)
     fail NotImplementedError
@@ -84,4 +79,9 @@ class GnomeShell < DesktopEnvironment
   def shell_eval(js_code)
     `gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval "#{js_code}"`
   end
+end
+
+if __FILE__ == $PROGRAM_NAME
+  performer = Performer.new
+  performer.perform($stdin.gets.chomp) while true
 end
