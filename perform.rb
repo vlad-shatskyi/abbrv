@@ -43,6 +43,8 @@ class Performer
       open($1)
     when /\Atype (.+)\z/
       @desktop_environment.type($1)
+    when /\Aexecute (.+)\z/
+      @desktop_environment.execute($1)
     when /\A([a-z]+) is not defined\z/
       error %Q(Shortcut '#{$1}' is not defined. Ignoring...)
     else
@@ -61,6 +63,10 @@ class DesktopEnvironment
   end
 
   def type(string)
+    fail NotImplementedError
+  end
+
+  def execute(command)
     fail NotImplementedError
   end
 end
@@ -82,6 +88,10 @@ class GnomeShell < DesktopEnvironment
 
   def type(string)
     `xdotool type --clearmodifiers --delay 0 -- "#{string}"`
+  end
+
+  def execute(command)
+    `#{command}`
   end
 
   private
