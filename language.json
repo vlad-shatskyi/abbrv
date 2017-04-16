@@ -12,5 +12,11 @@
   "s": "focus Slack",
   "t": "focus Tilix",
   "dw": "open ~/Downloads",
-  "sa": "show abbreviations"
+  "sa": "show abbreviations",
+  
+  "gap": "type git add --patch",
+  "gc": "type git commit --message '",
+  "gcp": "type git commit --patch ",
+  "gp": "type git push",
+  "gpl": "type git pull"
 }

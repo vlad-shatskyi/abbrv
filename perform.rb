@@ -37,11 +37,13 @@ class Performer
       close_current_window
     when 'show abbreviations'
       show_abbreviations
-    when /^focus ([-\w]+)$/
+    when /\Afocus ([-\w]+)\z/
       @desktop_environment.launch_or_focus($1)
-    when /^open ([^ ]+)$/
+    when /\Aopen ([^ ]+)\z/
       open($1)
-    when /^([a-z]+) is not defined$/
+    when /\Atype (.+)\z/
+      @desktop_environment.type($1)
+    when /\A([a-z]+) is not defined\z/
       error %Q(Shortcut '#{$1}' is not defined. Ignoring...)
     else
       error %Q(Don't know how to handle '#{command}'. Ignoring...)
@@ -55,6 +57,10 @@ class DesktopEnvironment
   end
 
   def launch_or_focus(window)
+    fail NotImplementedError
+  end
+
+  def type(string)
     fail NotImplementedError
   end
 end
@@ -72,6 +78,10 @@ class GnomeShell < DesktopEnvironment
 
   def launch_or_focus(window)
     shell_eval("Main.activateWindow(global.screen.get_workspace_by_index(0).list_windows().find(w => w.get_wm_class() == '#{window}'))")
+  end
+
+  def type(string)
+    `xdotool type --clearmodifiers --delay 0 -- "#{string}"`
   end
 
   private
