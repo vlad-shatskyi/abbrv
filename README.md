@@ -9,6 +9,9 @@
 
 ### Chores
 
+* Extract parser.
+  - Parse using Parsec.
+  - Validate the language file using the parser.
 * Write tests.
 * Try to run in Docker.
 * Rewrite in Haskell?
