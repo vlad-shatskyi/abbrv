@@ -21,7 +21,7 @@
   "gap": "type git add --patch",
   "gd": "type git diff",
   "gc": "type git commit --message '",
-  "gca": "type git commit --all --message '.'",
+  "gc.": "type git commit --all --message '.'",
   "gcp": "type git commit --patch ",
   "gp": "type git push",
   "gpl": "type git pull"
