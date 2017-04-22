@@ -5,6 +5,7 @@
 ### Features
 
 * Arbitrary length shortcuts.
+* TODO: Cancel shortcuts with Escape.
 * TODO: Context dependent shortcuts.
 
 ### Chores
