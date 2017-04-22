@@ -122,9 +122,9 @@ class GnomeShell < DesktopEnvironment
         shell_eval("Shell.AppSystem.get_default().lookup_desktop_wmclass('#{application.desktop_file_name}').activate()")
       end
     elsif window.start_with?('~/dev')
-      _was_successful, result = shell_eval("global.screen.get_workspace_by_index(0).list_windows().find(w => w.title.contains('[#{window}]'))").strip[1..-2].split(',').map(&:strip)
+      result = shell_eval("global.screen.get_workspace_by_index(0).list_windows().find(w => w.title.contains('[#{window}]'))")
 
-      if result == "''"
+      if result == ''
         `nohup rubymine #{window} &`
       else
         shell_eval("Main.activateWindow(global.screen.get_workspace_by_index(0).list_windows().find(w => w.title.contains('[#{window}]')))")
@@ -143,13 +143,15 @@ class GnomeShell < DesktopEnvironment
   private
 
   def shell_eval(js_code)
-    `gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval "#{js_code}"`
+    raw_result = `gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval "#{js_code}"`
+    _was_successful, quoted_result = raw_result.strip[1..-2].split(',').map(&:strip)
+    quoted_result[1..-2]
   end
 
   def window_with_class_is_open(application)
-    _was_successful, result = shell_eval("Shell.AppSystem.get_default().lookup_desktop_wmclass('#{application.desktop_file_name}').get_windows().length").strip[1..-2].split(',').map(&:strip)
+    result = shell_eval("Shell.AppSystem.get_default().lookup_desktop_wmclass('#{application.desktop_file_name}').get_windows().length")
 
-    result != "'0'"
+    result != '0'
   end
 end
 
