@@ -71,42 +71,34 @@ class GnomeShell < DesktopEnvironment
   APPLICATIONS = [
     {
       name: 'Chrome',
-      wm_class: 'Google-chrome',
       desktop_file_name: 'google-chrome',
     },
     {
       name: 'TeamViewer',
-      wm_class: 'TeamViewer',
       desktop_file_name: 'com.teamviewer.TeamViewer',
     },
     {
       name: 'Emacs',
-      wm_class: 'Emacs',
       desktop_file_name: 'emacs',
     },
     {
       name: 'Telegram',
-      wm_class: 'TelegramDesktop',
       desktop_file_name: 'telegramdesktop',
     },
     {
       name: 'Nylas Mail',
-      wm_class: 'Nylas Mail',
       desktop_file_name: 'nylas-mail',
     },
     {
       name: 'Slack',
-      wm_class: 'Slack',
       desktop_file_name: 'slack',
     },
     {
       name: 'Tilix',
-      wm_class: 'Tilix',
       desktop_file_name: 'com.gexperts.Tilix',
     },
     {
       name: 'RubyMine',
-      wm_class: 'jetbrains-rubymine',
       desktop_file_name: 'rubymine',
     },
   ].map { |application| OpenStruct.new(application) }
@@ -124,7 +116,7 @@ class GnomeShell < DesktopEnvironment
   def focus_or_launch(window)
     application = APPLICATIONS.find { |application| application.name.downcase == window }
     if application
-      if window_with_class_is_open(application.wm_class)
+      if window_with_class_is_open(application)
         shell_eval("Main.activateWindow(Shell.AppSystem.get_default().lookup_desktop_wmclass('#{application.desktop_file_name}').get_windows()[0])")
       else
         shell_eval("Shell.AppSystem.get_default().lookup_desktop_wmclass('#{application.desktop_file_name}').activate()")
@@ -154,10 +146,10 @@ class GnomeShell < DesktopEnvironment
     `gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval "#{js_code}"`
   end
 
-  def window_with_class_is_open(window_class)
-    _was_successful, result = shell_eval("global.screen.get_workspace_by_index(0).list_windows().find(w => w.get_wm_class() == '#{window_class}')").strip[1..-2].split(',').map(&:strip)
+  def window_with_class_is_open(application)
+    _was_successful, result = shell_eval("Shell.AppSystem.get_default().lookup_desktop_wmclass('#{application.desktop_file_name}').get_windows().length").strip[1..-2].split(',').map(&:strip)
 
-    result != "''"
+    result != "'0'"
   end
 end
 
