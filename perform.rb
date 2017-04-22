@@ -2,10 +2,6 @@ require 'pry'
 
 STDOUT.sync = true
 
-def close_current_window
-  `xdotool getactivewindow windowkill`
-end
-
 def show_abbreviations
   `gedit language.json`
 end
@@ -32,7 +28,7 @@ class Performer
     @desktop_environment.show_notification(capitalize(command))
     case command.downcase
     when 'close current window'
-      close_current_window
+      @desktop_environment.close_current_window
     when 'show abbreviations'
       show_abbreviations
     when /\Aopen (.+)\z/
@@ -130,6 +126,10 @@ class GnomeShell < DesktopEnvironment
         shell_eval("Main.activateWindow(global.screen.get_workspace_by_index(0).list_windows().find(w => w.title.contains('[#{window}]')))")
       end
     end
+  end
+
+  def close_current_window
+    shell_eval("global.display.focus_window.delete(0)")
   end
 
   def type(string)
