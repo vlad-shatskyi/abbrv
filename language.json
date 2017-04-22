@@ -16,7 +16,7 @@
   "ra": "open ~/dev/work/data_pipeline_automation",
   "rs": "open ~/dev/work/data_pipeline-data_staging",
   "rl": "open ~/dev/work/data_pipeline-loader",
-  "rc": "open ~/dev/work/dpl-conductor",
+  "rr": "open ~/dev/work/dpl-conductor",
 
   "gap": "type git add --patch",
   "gd": "type git diff",
