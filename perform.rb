@@ -125,7 +125,7 @@ class GnomeShell < DesktopEnvironment
     application = APPLICATIONS.find { |application| application.name.downcase == window }
     if application
       if window_with_class_is_open(application.wm_class)
-        shell_eval("Main.activateWindow(global.screen.get_workspace_by_index(0).list_windows().find(w => w.get_wm_class() == '#{application.wm_class}'))")
+        shell_eval("Main.activateWindow(Shell.AppSystem.get_default().lookup_desktop_wmclass('#{application.desktop_file_name}').get_windows()[0])")
       else
         shell_eval("Shell.AppSystem.get_default().lookup_desktop_wmclass('#{application.desktop_file_name}').activate()")
       end
