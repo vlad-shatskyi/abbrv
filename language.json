@@ -14,12 +14,12 @@
   "sa": "show abbreviations",
   
   "r": "focus jetbrains-rubymine",
-  "ra": "execute nohup rubymine ~/dev/work/data_pipeline-acquire &",
-  "rat": "execute nohup rubymine ~/dev/work/data_pipeline-automation &",
-  "rs": "execute nohup rubymine ~/dev/work/data_pipeline-data_staging &",
-  "rl": "execute nohup rubymine ~/dev/work/data_pipeline-loader &",
-  "rl": "execute nohup rubymine ~/dev/work/data_pipeline-loader &",
-  "rc": "execute nohup rubymine ~/dev/work/dpl-conductor &",
+  "rab": "focus ~/dev/pet/abbrv",
+  "rq": "focus ~/dev/work/data_pipeline-acquire",
+  "ra": "focus ~/dev/work/data_pipeline-automation",
+  "rs": "focus ~/dev/work/data_pipeline-data_staging",
+  "rl": "focus ~/dev/work/data_pipeline-loader",
+  "rc": "focus ~/dev/work/dpl-conductor",
   
   "gap": "type git add --patch",
   "gc": "type git commit --message '",

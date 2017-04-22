@@ -1,3 +1,5 @@
+require 'pry'
+
 STDOUT.sync = true
 
 def close_current_window
@@ -37,8 +39,8 @@ class Performer
       close_current_window
     when 'show abbreviations'
       show_abbreviations
-    when /\Afocus ([-\w]+)\z/
-      @desktop_environment.launch_or_focus($1)
+    when /\Afocus ([^ ]+)\z/
+      @desktop_environment.focus_or_launch($1)
     when /\Aopen ([^ ]+)\z/
       open($1)
     when /\Atype (.+)\z/
@@ -82,8 +84,18 @@ class GnomeShell < DesktopEnvironment
     shell_eval("new OsdWindow('#{prepared_command}').show();")
   end
 
-  def launch_or_focus(window)
-    shell_eval("Main.activateWindow(global.screen.get_workspace_by_index(0).list_windows().find(w => w.get_wm_class() == '#{window}'))")
+  def focus_or_launch(window)
+    if window.start_with?('~/dev')
+      _was_successful, result = shell_eval("global.screen.get_workspace_by_index(0).list_windows().find(w => w.title.contains('[#{window}]'))").strip[1..-2].split(',').map(&:strip)
+
+      if result == "''"
+        `nohup rubymine #{window} &`
+      else
+        shell_eval("Main.activateWindow(global.screen.get_workspace_by_index(0).list_windows().find(w => w.title.contains('[#{window}]')))")
+      end
+    else
+      shell_eval("Main.activateWindow(global.screen.get_workspace_by_index(0).list_windows().find(w => w.get_wm_class() == '#{window}'))")
+    end
   end
 
   def type(string)
