@@ -10,8 +10,20 @@
   "sa": "Show Abbreviations",
 
   "j": "open Chrome",
-  "js": "open https://hangouts.google.com/hangouts/_/brightbytes.net/s-squad?authuser=1",
-  "jt": "open https://trello.com/b/8QZLKpIA/dev-sis-dpl",
+  "osta": "open https://hangouts.google.com/hangouts/_/brightbytes.net/s-squad?authuser=1",
+  "otr": "open https://trello.com/b/8QZLKpIA/dev-sis-dpl",
+  "ocl": "open https://calendar.google.com/calendar/b/1/render#main_7",
+
+  "ogc": "open https://github.com/brightbytes/dpl-conductor",
+
+  "oa": "open https://us-west-2.console.aws.amazon.com/console/home?region=us-west-2#",
+  "oas": "open https://console.aws.amazon.com/s3/home?region=us-west-2#",
+  "osab": "open https://console.aws.amazon.com/s3/buckets/bb-pipeline-sandbox/?region=us-west-2&tab=overview",
+  "osarb": "open https://console.aws.amazon.com/s3/buckets/bb-pipeline-sandbox-rawdata/?region=us-west-2&tab=overview",
+  "ostb": "open https://console.aws.amazon.com/s3/buckets/bb-pipeline-staging/?region=us-west-2&tab=overview",
+  "ostrb": "open https://console.aws.amazon.com/s3/buckets/bb-pipeline-staging-rawdata/?region=us-west-2&tab=overview",
+  "oprb": "open https://console.aws.amazon.com/s3/buckets/bb-pipeline-production/?region=us-west-2&tab=overview",
+  "oprrb": "open https://console.aws.amazon.com/s3/buckets/bb-pipeline-production-rawdata/?region=us-west-2&tab=overview",
 
   "r": "open RubyMine",
   "rb": "open ~/dev/pet/abbrv",
