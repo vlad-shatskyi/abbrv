@@ -26,7 +26,7 @@ class Performer
   def perform(command)
     puts command
     @desktop_environment.show_notification(capitalize(command))
-    case command.downcase
+    case command
     when 'close current window'
       @desktop_environment.close_current_window
     when 'show abbreviations'
@@ -35,6 +35,8 @@ class Performer
       @desktop_environment.focus_or_launch($1)
     when /\Atype (.+)\z/
       @desktop_environment.type($1)
+    when /\Apress (.+)\z/
+      @desktop_environment.press($1)
     when /\Aexecute (.+)\z/
       @desktop_environment.execute($1)
     when /\A([a-z]+) is not defined\z/
@@ -110,13 +112,21 @@ class GnomeShell < DesktopEnvironment
   end
 
   def focus_or_launch(window)
-    application = APPLICATIONS.find { |application| application.name.downcase == window }
+    application = APPLICATIONS.find { |application| application.name == window }
     if application
       if window_with_class_is_open(application)
         shell_eval("Main.activateWindow(Shell.AppSystem.get_default().lookup_desktop_wmclass('#{application.desktop_file_name}').get_windows()[0])")
       else
         shell_eval("Shell.AppSystem.get_default().lookup_desktop_wmclass('#{application.desktop_file_name}').activate()")
       end
+    elsif window.start_with?('http')
+      performer = Performer.new
+      performer.perform('open Chrome')
+      sleep 0.3
+      performer.perform('press ctrl+t')
+      sleep 0.3
+      performer.perform("type #{window}")
+      performer.perform('press Return')
     elsif window.start_with?('~/dev')
       result = shell_eval("global.screen.get_workspace_by_index(0).list_windows().find(w => w.title.contains('[#{window}]'))")
 
@@ -134,6 +144,10 @@ class GnomeShell < DesktopEnvironment
 
   def type(string)
     `xdotool type --clearmodifiers --delay 0 -- "#{string}"`
+  end
+
+  def press(key)
+    `xdotool key #{key}`
   end
 
   def execute(command)

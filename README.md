@@ -16,6 +16,7 @@
 * Close current window.
 * Focus or open an application.
 * Focus or open a project.
+* Open a website.
 * Type text.
 
 ### Bugs

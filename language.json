@@ -1,6 +1,5 @@
 {
   "w": "Close Current Window",
-  "j": "open Chrome",
   "i": "open TeamViewer",
   "e": "open Emacs",
   "=": "open Telegram",
@@ -9,6 +8,10 @@
   "t": "open Tilix",
   "dw": "open ~/Downloads",
   "sa": "Show Abbreviations",
+
+  "j": "open Chrome",
+  "js": "open https://hangouts.google.com/hangouts/_/brightbytes.net/s-squad?authuser=1",
+  "jt": "open https://trello.com/b/8QZLKpIA/dev-sis-dpl",
 
   "r": "open RubyMine",
   "rb": "open ~/dev/pet/abbrv",
