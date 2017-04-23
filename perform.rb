@@ -27,19 +27,19 @@ class Performer
     puts command
     @desktop_environment.show_notification(capitalize(command))
     case command
-    when 'close current window'
+    when /\Aclose current window\z/i
       @desktop_environment.close_current_window
-    when 'show abbreviations'
+    when /\Ashow abbreviations\z/i
       show_abbreviations
-    when /\Aopen (.+)\z/
+    when /\Aopen (.+)\z/i
       @desktop_environment.focus_or_launch($1)
-    when /\Atype (.+)\z/
+    when /\Atype (.+)\z/i
       @desktop_environment.type($1)
-    when /\Apress (.+)\z/
+    when /\Apress (.+)\z/i
       @desktop_environment.press($1)
-    when /\Aexecute (.+)\z/
+    when /\Aexecute (.+)\z/i
       @desktop_environment.execute($1)
-    when /\A([a-z]+) is not defined\z/
+    when /\A([a-z]+) is not defined\z/i
       error %Q(Shortcut '#{$1}' is not defined. Ignoring...)
     else
       error %Q(Don't know how to handle '#{command}'. Ignoring...)
