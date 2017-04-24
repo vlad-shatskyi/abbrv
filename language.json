@@ -8,6 +8,7 @@
   "t": "open Tilix",
   "dw": "open ~/Downloads",
   "sa": "Show Abbreviations",
+  "lg": "execute gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval 'Main.lookingGlass.toggle();'",
 
   "j": "open Chrome",
   "h": "open http://hckrnews.com",
