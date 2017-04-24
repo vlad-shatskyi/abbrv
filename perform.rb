@@ -112,25 +112,7 @@ class Performer
   end
 end
 
-class DesktopEnvironment
-  def show_notification(message)
-    fail NotImplementedError
-  end
-
-  def launch_or_focus(window)
-    fail NotImplementedError
-  end
-
-  def type(string)
-    fail NotImplementedError
-  end
-
-  def execute(command)
-    fail NotImplementedError
-  end
-end
-
-class GnomeShell < DesktopEnvironment
+class GnomeShell
   def initialize
     prepared_shell_code = escape_double_quotes(File.read('osd.js')).gsub("\n", "\\\n")
     shell_eval(prepared_shell_code)
@@ -164,7 +146,11 @@ class GnomeShell < DesktopEnvironment
   end
 
   def type(string)
-    `xdotool type --delay 0 -- "#{escape_double_quotes(string)}"`
+    old_clipboard_content = `xsel --clipboard --output`
+    `echo "#{string}" | xsel --clipboard --input` # copy to clipboard.
+    press('ctrl+v')
+    sleep 0.1
+    `echo "#{old_clipboard_content}" | xsel --clipboard --input` # copy to clipboard.
   end
 
   def press(key)

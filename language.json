@@ -19,9 +19,9 @@
   "j": "open Chrome",
   "h": "open http://hckrnews.com",
   "id": "open http://idiod.leprosorium.ru",
-  "osta": "open https://hangouts.google.com/hangouts/_/brightbytes.net/s-squad?authuser=1",
-  "otr": "open https://trello.com/b/8QZLKpIA/dev-sis-dpl",
-  "ocl": "open https://calendar.google.com/calendar/b/1/render#main_7",
+  "st": "open https://hangouts.google.com/hangouts/_/brightbytes.net/s-squad?authuser=1",
+  "tr": "open https://trello.com/b/8QZLKpIA/dev-sis-dpl",
+  "cl": "open https://calendar.google.com/calendar/b/1/render#main_7",
 
   "ogc": "open https://github.com/brightbytes/dpl-conductor",
 
