@@ -97,7 +97,12 @@ class Performer
       perform_internal('open Slack')
       perform_internal('press ctrl+2')
       perform_internal('press ctrl+k')
-      @desktop_environment.type($1)
+      perform_internal("type #{$1}")
+      perform_internal('press Return')
+    when /\Atelegram (.+)\z/i
+      perform_internal('open Telegram')
+      perform_internal('press Escape')
+      perform_internal("type #{$1}")
       perform_internal('press Return')
     when /\A([a-z]+) is not defined\z/i
       error %Q(Shortcut '#{$1}' is not defined. Ignoring...)

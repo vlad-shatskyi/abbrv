@@ -2,7 +2,6 @@
   "w": "Close Current Window",
   "i": "open TeamViewer",
   "e": "open Emacs",
-  "=": "open Telegram",
   "m": "open Nylas Mail",
   "t": "open Tilix",
   "dw": "open ~/Downloads",
@@ -11,6 +10,11 @@
 
   "s": "open Slack",
   "sk": "slack Kesha",
+  "sd": "slack data-hub",
+
+  "=": "open Telegram",
+  "=m": "telegram Mary",
+  "=v": "telegram Volodymyr Barna",
 
   "j": "open Chrome",
   "h": "open http://hckrnews.com",
