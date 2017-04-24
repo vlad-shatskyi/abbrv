@@ -4,11 +4,13 @@
   "e": "open Emacs",
   "=": "open Telegram",
   "m": "open Nylas Mail",
-  "s": "open Slack",
   "t": "open Tilix",
   "dw": "open ~/Downloads",
   "sa": "Show Abbreviations",
   "lg": "execute gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval 'Main.lookingGlass.toggle();'",
+
+  "s": "open Slack",
+  "sk": "slack Kesha",
 
   "j": "open Chrome",
   "h": "open http://hckrnews.com",
