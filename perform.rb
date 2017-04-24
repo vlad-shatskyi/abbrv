@@ -18,6 +18,41 @@ def capitalize(sentence)
   sentence.split(' ').map(&:capitalize).join(' ')
 end
 
+APPLICATIONS = [
+  {
+    name: 'Chrome',
+    desktop_file_name: 'google-chrome',
+  },
+  {
+    name: 'TeamViewer',
+    desktop_file_name: 'com.teamviewer.TeamViewer',
+  },
+  {
+    name: 'Emacs',
+    desktop_file_name: 'emacs',
+  },
+  {
+    name: 'Telegram',
+    desktop_file_name: 'telegramdesktop',
+  },
+  {
+    name: 'Nylas Mail',
+    desktop_file_name: 'nylas-mail',
+  },
+  {
+    name: 'Slack',
+    desktop_file_name: 'slack',
+  },
+  {
+    name: 'Tilix',
+    desktop_file_name: 'com.gexperts.Tilix',
+  },
+  {
+    name: 'RubyMine',
+    desktop_file_name: 'rubymine',
+  },
+].map { |application| OpenStruct.new(application) }
+
 class Performer
   def initialize
     @desktop_environment = GnomeShell.new
@@ -26,13 +61,32 @@ class Performer
   def perform(command)
     puts command
     @desktop_environment.show_notification(capitalize(command))
+    perform_internal(command)
+  end
+
+  private
+
+  def perform_internal(command)
     case command
     when /\Aclose current window\z/i
       @desktop_environment.close_current_window
     when /\Ashow abbreviations\z/i
       show_abbreviations
     when /\Aopen (.+)\z/i
-      @desktop_environment.focus_or_launch($1)
+      openable = $1
+      application = APPLICATIONS.find { |application| application.name == openable }
+      if application
+        @desktop_environment.open_application(application)
+      elsif openable.start_with?('~/dev')
+        @desktop_environment.open_project(openable)
+      elsif openable.start_with?('http')
+        perform_internal('open Chrome')
+        sleep 0.3
+        perform_internal('press ctrl+t')
+        sleep 0.3
+        perform_internal("type #{openable}")
+        perform_internal('press Return')
+      end
     when /\Atype (.+)\z/i
       @desktop_environment.type($1)
     when /\Apress (.+)\z/i
@@ -66,41 +120,6 @@ class DesktopEnvironment
 end
 
 class GnomeShell < DesktopEnvironment
-  APPLICATIONS = [
-    {
-      name: 'Chrome',
-      desktop_file_name: 'google-chrome',
-    },
-    {
-      name: 'TeamViewer',
-      desktop_file_name: 'com.teamviewer.TeamViewer',
-    },
-    {
-      name: 'Emacs',
-      desktop_file_name: 'emacs',
-    },
-    {
-      name: 'Telegram',
-      desktop_file_name: 'telegramdesktop',
-    },
-    {
-      name: 'Nylas Mail',
-      desktop_file_name: 'nylas-mail',
-    },
-    {
-      name: 'Slack',
-      desktop_file_name: 'slack',
-    },
-    {
-      name: 'Tilix',
-      desktop_file_name: 'com.gexperts.Tilix',
-    },
-    {
-      name: 'RubyMine',
-      desktop_file_name: 'rubymine',
-    },
-  ].map { |application| OpenStruct.new(application) }
-
   def initialize
     prepared_shell_code = escape_double_quotes(File.read('osd.js')).gsub("\n", "\\\n")
     shell_eval(prepared_shell_code)
@@ -111,30 +130,21 @@ class GnomeShell < DesktopEnvironment
     shell_eval("new OsdWindow('#{prepared_command}').show();")
   end
 
-  def focus_or_launch(window)
-    application = APPLICATIONS.find { |application| application.name == window }
-    if application
-      if window_with_class_is_open(application)
-        shell_eval("Main.activateWindow(Shell.AppSystem.get_default().lookup_desktop_wmclass('#{application.desktop_file_name}').get_windows()[0])")
-      else
-        shell_eval("Shell.AppSystem.get_default().lookup_desktop_wmclass('#{application.desktop_file_name}').activate()")
-      end
-    elsif window.start_with?('http')
-      performer = Performer.new
-      performer.perform('open Chrome')
-      sleep 0.3
-      performer.perform('press ctrl+t')
-      sleep 0.3
-      performer.perform("type #{window}")
-      performer.perform('press Return')
-    elsif window.start_with?('~/dev')
-      result = shell_eval("global.screen.get_workspace_by_index(0).list_windows().find(w => w.title.contains('[#{window}]'))")
+  def open_application(application)
+    if window_with_class_is_open(application)
+      shell_eval("Main.activateWindow(Shell.AppSystem.get_default().lookup_desktop_wmclass('#{application.desktop_file_name}').get_windows()[0])")
+    else
+      shell_eval("Shell.AppSystem.get_default().lookup_desktop_wmclass('#{application.desktop_file_name}').activate()")
+    end
+  end
 
-      if result == ''
-        `nohup rubymine #{window} &`
-      else
-        shell_eval("Main.activateWindow(global.screen.get_workspace_by_index(0).list_windows().find(w => w.title.contains('[#{window}]')))")
-      end
+  def open_project(title)
+    result = shell_eval("global.screen.get_workspace_by_index(0).list_windows().find(w => w.title.contains('[#{title}]'))")
+
+    if result == ''
+      `nohup rubymine #{title} &`
+    else
+      shell_eval("Main.activateWindow(global.screen.get_workspace_by_index(0).list_windows().find(w => w.title.contains('[#{title}]')))")
     end
   end
 
