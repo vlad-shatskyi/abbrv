@@ -22,7 +22,7 @@
 ### Bugs
 
 * Shortcuts don't work in gedit.
-* Sometimes opening a URL types %7C instead of /.
+* TeamViewer window doesn't get focused.
 
 ### Chores
 

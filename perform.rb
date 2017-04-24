@@ -153,7 +153,7 @@ class GnomeShell < DesktopEnvironment
   end
 
   def type(string)
-    `xdotool type --clearmodifiers --delay 0 -- "#{string}"`
+    `xdotool type --delay 0 -- "#{escape_double_quotes(string)}"`
   end
 
   def press(key)

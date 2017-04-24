@@ -30,9 +30,11 @@
   "r": "open RubyMine",
   "rb": "open ~/dev/pet/abbrv",
   "rq": "open ~/dev/work/data_pipeline-acquire",
+  "re": "open ~/dev/work/clarity_early_warning",
   "ra": "open ~/dev/work/data_pipeline_automation",
   "rs": "open ~/dev/work/data_pipeline-data_staging",
   "rl": "open ~/dev/work/data_pipeline-loader",
+  "rp": "open ~/dev/work/data_pipeline",
   "rr": "open ~/dev/work/dpl-conductor",
 
   "gap": "type git add --patch",
