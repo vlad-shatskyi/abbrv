@@ -86,6 +86,12 @@ class Performer
         sleep 0.3
         perform_internal("type #{openable}")
         perform_internal('press Return')
+      elsif openable.end_with?(' model')
+        perform_internal('press ctrl+n')
+        sleep 0.5
+        perform_internal("type #{openable.split(' ').first}")
+        sleep 0.5
+        perform_internal('press Return')
       end
     when /\Atype (.+)\z/i
       @desktop_environment.type($1)

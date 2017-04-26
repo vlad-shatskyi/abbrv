@@ -22,6 +22,11 @@
   "st": "open https://hangouts.google.com/hangouts/_/brightbytes.net/s-squad?authuser=1",
   "tr": "open https://trello.com/b/8QZLKpIA/dev-sis-dpl",
   "cl": "open https://calendar.google.com/calendar/b/1/render#main_7",
+  "bbm": "open https://mail.google.com/mail/u/1/",
+  
+  "csa": "open http://sandbox.dpl.bbinternal.net/",
+  "cst": "open http://staging.dpl.bbinternal.net/",
+  "cpr": "open http://dpl.bbinternal.net/",
 
   "ogc": "open https://github.com/brightbytes/dpl-conductor",
 
@@ -43,6 +48,10 @@
   "rl": "open ~/dev/work/data_pipeline-loader",
   "rp": "open ~/dev/work/data_pipeline",
   "rr": "open ~/dev/work/dpl-conductor",
+  
+  "cwm": "open CustomerWorkflow model",
+  "tm": "open Transformation model",
+  "tgm": "open TransformationGroup model",
 
   "gap": "type git add --patch",
   "gd": "type git diff",
